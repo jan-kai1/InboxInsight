@@ -28,7 +28,7 @@ CORS(app, supports_credentials= True)
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'# GOOGLE will error if redirect to non http if dont have this
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 BACKEND_URL = os.getenv("BACKEND_URL")
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
@@ -44,7 +44,7 @@ migrate = Migrate(app,db)
 DEV_GMAIL_TOKEN_PATH = "creds/gmail_token.json"
 DEV_CLIENT_SECRET_PATH = "web_google.json"
 # DEV_CLIENT_SECRET_PATH = "creds/client_secret.json"
-
+GOOGLE_CLIENT_ID = json.loads(DEV_CLIENT_SECRET_PATH)['client_id']
 
 SCOPES = ["openid","https://www.googleapis.com/auth/userinfo.email",  "https://www.googleapis.com/auth/gmail.modify", "https://www.googleapis.com/auth/gmail.readonly"]
 
