@@ -42,7 +42,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 
 DEV_GMAIL_TOKEN_PATH = "creds/gmail_token.json"
-DEV_CLIENT_SECRET_PATH = "creds/web_google.json"
+DEV_CLIENT_SECRET_PATH = "web_google.json"
 
 
 SCOPES = ["openid","https://www.googleapis.com/auth/userinfo.email",  "https://www.googleapis.com/auth/gmail.modify", "https://www.googleapis.com/auth/gmail.readonly"]
