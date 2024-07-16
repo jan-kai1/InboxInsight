@@ -72,7 +72,7 @@ SCOPES = ["openid","https://www.googleapis.com/auth/userinfo.email",  "https://w
 flow = Flow.from_client_secrets_file(
     client_secrets_file= DEV_CLIENT_SECRET_PATH,
     scopes=SCOPES,
-    redirect_uri= f"{BACKEND_URL}/callback"
+    # redirect_uri= f"{BACKEND_URL}/callback"
 )
 
 class UserToken(db.Model): #userid uses the gmail
