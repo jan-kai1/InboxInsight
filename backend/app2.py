@@ -44,7 +44,16 @@ migrate = Migrate(app,db)
 DEV_GMAIL_TOKEN_PATH = "creds/gmail_token.json"
 DEV_CLIENT_SECRET_PATH = "web_google.json"
 # DEV_CLIENT_SECRET_PATH = "creds/client_secret.json"
-GOOGLE_CLIENT_ID = json.loads(DEV_CLIENT_SECRET_PATH)['client_id']
+GOOGLE_CLIENT_ID = None
+try:
+    with open(DEV_CLIENT_SECRET_PATH, 'r') as file:
+        data = json.load(file)
+        GOOGLE_CLIENT_ID = data.get('client_id')
+        # Continue with your code that uses GOOGLE_CLIENT_ID
+except FileNotFoundError:
+    print(f"File not found: {DEV_CLIENT_SECRET_PATH}")
+except json.JSONDecodeError as e:
+    print(f"Error decoding JSON: {e}")
 
 SCOPES = ["openid","https://www.googleapis.com/auth/userinfo.email",  "https://www.googleapis.com/auth/gmail.modify", "https://www.googleapis.com/auth/gmail.readonly"]
 
