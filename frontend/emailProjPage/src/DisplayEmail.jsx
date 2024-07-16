@@ -4,14 +4,8 @@ import { Modal, Button } from "react-bootstrap"
 function DisplayEmail({emailData, pg = 0}) {
     //each page is 5 emails
     
-    // console.log(emailData)
-    // if (emailData){
-    //     console.log("displayed received")
-    //     console.log(emailData)
-    //     console.log(emailData[0])
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_HOST
 
-    // }
-    // console.log (Array.isArray(emailData))
     const [summaryText, setSummaryText] = useState("")
     const [showPopup, setPopupStatus] = useState(false)
     const handleClose = () => {
@@ -23,7 +17,13 @@ function DisplayEmail({emailData, pg = 0}) {
     let toDisplay = emailData.slice(pg * 5, pg*5 + 5)
     
     const getSummary = async (text) => {
-        const res = await fetch("http://127.0.0.1:5000/summary/get" ,{
+        if (text == null) {
+            setSummaryText("Summary not available for this email")
+            setPopupStatus(true)
+            return 
+        }
+        console.log(text)
+        const res = await fetch( BACKEND_URL + "summary/get" ,{
             method : "POST",
             headers : {
                 'Content-Type' : 'application/json'
@@ -34,6 +34,7 @@ function DisplayEmail({emailData, pg = 0}) {
         if (res.status == 400) {
             console.log(data.error)
         }
+        
         console.log(data.summary)
         setSummaryText(data.summary)
         setPopupStatus(true)
@@ -51,7 +52,7 @@ function DisplayEmail({emailData, pg = 0}) {
                     Close
                 </Button>
                 <Button variant="primary" onClick={handleClose}>
-                    Save Changes
+                    Write A Reply
                 </Button>
                 </Modal.Footer>
             </Modal>

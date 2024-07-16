@@ -1,2 +1,4 @@
 *.env
 *.json
+backend/readEmail.py
+backend/app.py

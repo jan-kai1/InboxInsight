@@ -19,4 +19,4 @@ def replaceLinks(text):
     # combine = patterns.join(f'({pattern})' for pattern in patterns)
     combine  = '|'.join(patterns)
    
-    return re.sub(combine, "[link]", text)
+    return re.sub(combine, " ", text)
