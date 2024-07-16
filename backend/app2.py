@@ -43,6 +43,7 @@ migrate = Migrate(app,db)
 
 DEV_GMAIL_TOKEN_PATH = "creds/gmail_token.json"
 DEV_CLIENT_SECRET_PATH = "web_google.json"
+# DEV_CLIENT_SECRET_PATH = "creds/client_secret.json"
 
 
 SCOPES = ["openid","https://www.googleapis.com/auth/userinfo.email",  "https://www.googleapis.com/auth/gmail.modify", "https://www.googleapis.com/auth/gmail.readonly"]
@@ -153,7 +154,7 @@ def callback():
                 retries += 1
                 time.sleep(5)
             else:
-                return {"error", str(e)} ,401
+                return {"error" : str(e)} ,401
 
    
     userGmailToken = credentials.to_json()
