@@ -62,9 +62,11 @@ function DisplayPage(props) {
                         // setEmailDataWrap(data)
 
                         console.log(data)
-                        if (data['emails'].length > 0) {
+                        if (data['emails'] && data['emails'].length > 0) {
+                            console.log("data found")
                             setEmailDataWrap(data)
                             setLoading(false)
+                            return
                         } else {
                             throw new Error("No data Received")
                         }
