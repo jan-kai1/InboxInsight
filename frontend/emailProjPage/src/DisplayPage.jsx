@@ -62,7 +62,7 @@ function DisplayPage(props) {
                         // setEmailDataWrap(data)
 
                         console.log(data)
-                        if (data.length > 0) {
+                        if (data['emails'].length > 0) {
                             setEmailDataWrap(data)
                             setLoading(false)
                         } else {
