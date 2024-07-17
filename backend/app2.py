@@ -43,7 +43,8 @@ migrate = Migrate(app,db)
 
 DEV_GMAIL_TOKEN_PATH = "creds/gmail_token.json"
 DEV_CLIENT_SECRET_PATH = "web_google.json"
-# DEV_CLIENT_SECRET_PATH = "creds/client_secret.json"
+DEV_CLIENT_SECRET_PATH = "creds/client_secret.json"
+#  # for on machine
 GOOGLE_CLIENT_ID = None
 try:
     with open(DEV_CLIENT_SECRET_PATH, 'r') as file:

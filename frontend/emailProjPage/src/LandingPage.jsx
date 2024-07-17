@@ -14,15 +14,14 @@ function LandingPage() {
         navigate(path);
     }
     const testCook = () => {
-        console.log(Cookies.get("sigma"))
-        console.log(Cookies.get("sigma") == undefined)
+        console.log(Cookies.get("userHash"))
     }
     return (
         <>
             <div>Welcome</div>
             <button onClick = {() => routeChange("/login")}>Login</button>
             <button onClick = {() => routeChange("/display")}> Display Email</button>
-            <button onClick = {() => testCook()}>Check default cookie value</button>
+            <button onClick = {() => testCook()}>Check Login Value</button>
         </>
         
     )

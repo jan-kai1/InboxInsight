@@ -46,20 +46,42 @@ function DisplayPage(props) {
             return navigate("/login")
         }
         else{
-            console.log("data type" + typeof(Cookies.get("userHash")))
-            console.log("hash is " + Cookies.get('userHash'))
+            // console.log("data type" + typeof(Cookies.get("userHash")))
+            // console.log("hash is " + Cookies.get('userHash'))
+            setLoading(true)
             // console.log(Cookies.get("userHash").raw)
-            fetch(`${BACKEND_URL}/emails/secure`, 
+            let attempts = 0
+
+            const attemptFetch = () => {
+                fetch(`${BACKEND_URL}/emails/secure`, 
                     {   method : 'POST', 
                     body : JSON.stringify({"userHash" : Cookies.get("userHash")}),
                     headers: { "Content-Type" : "application/json"}})
                     .then(response => response.json())
                     .then(data => {
                         // setEmailDataWrap(data)
+
                         console.log(data)
-                        setEmailDataWrap(data)
-                        
+                        if (data.length > 0) {
+                            setEmailDataWrap(data)
+                            setLoading(false)
+                        } else {
+                            throw new Error("No data Received")
+                        }
+                       
+                    }).catch( error => {
+                        console.log("fetch error: ", error)
+                        attempts++
+                        if (attempts < 5) {
+                            setTimeout(attemptFetch, 5000)
+                        } else {
+                            console.log("max retry reached, fail")
+                            setLoading(false)
+                        }
                     })
+            }
+            
+            attemptFetch()
         }
         
                 
