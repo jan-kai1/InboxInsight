@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie"
 import DisplayEmail from "./DisplayEmail"
 import { useNavigate } from "react-router-dom";
@@ -26,6 +26,7 @@ function DisplayPage(props) {
     const setEmailDataDemo = () => {
         setEmailDataWrap(emailTest)
     }
+    
     // sets the data into pages
     const setEmailDataWrap = (data) => {
         console.log("setting")

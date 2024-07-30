@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, request, session, abort, redirect
 from flask_cors import CORS
-from readEmailsGoogle import  plainEmails, getEmails
+from readEmailsGoogle import  plainEmails, getEmails, emailsBySender, getSenderAnalysis
 from regexes import replaceLinks
 from readEmailsGoogle import summarizeEmail
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 import google.auth.transport.requests 
 from google.oauth2.credentials import Credentials
 from google.oauth2 import id_token
@@ -42,9 +43,11 @@ db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 
 DEV_GMAIL_TOKEN_PATH = "creds/gmail_token.json"
+# for deploy
 DEV_CLIENT_SECRET_PATH = "web_google.json"
-# DEV_CLIENT_SECRET_PATH = "creds/client_secret.json"
 #  # for on machine
+# DEV_CLIENT_SECRET_PATH = "creds/client_secret.json"
+
 GOOGLE_CLIENT_ID = None
 try:
     with open(DEV_CLIENT_SECRET_PATH, 'r') as file:
@@ -123,9 +126,48 @@ def login():
     session["state"] = state
     return redirect(authorization_url)
 
+
+
+#is passed a user ID and returns a list of lists of emails sorted by sender  
+@app.route("/overview", methods = ["GET", "POST"])
+def overview():
+    # gives the top 5 people sending emails within last 14 days
+    # get all emails within last 14 days
+    # sort by unique email senders
+    # create a hashtable 
+    data = request.get_json()
+    app.logger.info(data)
+    if data == None:
+        return jsonify({"error": "invalid data/ no token"}, 401)
+    else:
+        userHash = data['userHash']
+        app.logger.info(userHash)
+        # return jsonify({"status" : userHash})
+        try: 
+            user = UserToken.query.filter_by(hashedEmail = userHash).one()
+            userToken = user.gmail_token
+            #pass into email
+            authToken = json.loads(userToken)
+            senders =  emailsBySender(authToken)
+            data = {"userEmail" : user.user_id, "senders" : senders}
+            return jsonify(data)
+        except NoResultFound as e:
+            return {"error" : e}, 401
+        
+@app.route("/analysis", methods = ["POST", "GET"])
+def analysis():
+    data = request.get_json()
    
-
-
+    if not data['userHash']:
+        return {"error" : "no userHash"},401
+    
+    userHash = data['userHash']
+    try:
+        regUser = UserToken.query.filter_by(hashedEmail = userHash).one()
+        analysis = getSenderAnalysis(data['emails'])
+        return jsonify({"analysis" : analysis})
+    except NoResultFound as e:
+        return {"error" : e}, 401
 
 @app.route("/callback")
 def callback():
@@ -175,6 +217,9 @@ def callback():
     try: 
         existingUser = UserToken.query.filter_by(user_id = userEmail).one()
         existingUser.gmail_token  = userGmailToken
+        db.session.commit()
+        app.logger.info("added to database new token")
+        
         # return jsonify({"message" : "account updated", "userHash" : existingUser.hashedEmail} , 200)
         return redirect(f"{FRONTEND_URL}/confirmation?success=true&userHash={existingUser.hashedEmail}")
 
@@ -252,4 +297,4 @@ if __name__ == "__main__":
 
 
  
-    app.run(debug = False)
+    app.run(debug = True)

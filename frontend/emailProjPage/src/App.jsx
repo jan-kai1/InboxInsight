@@ -7,7 +7,7 @@ import LandingPage from "./LandingPage"
 import ConfirmationPage from "./ConfirmationPage"
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import Cookies from "js-cookie";
-
+import SenderDisplay from "./SenderDisplay"
 
 function App() {
 
@@ -54,7 +54,7 @@ function App() {
                   } />
                   <Route path = "/confirmation" element = {<ConfirmationPage />} />
                   
-                    
+                  <Route path = "/overview" element = {<SenderDisplay />}/>
                     
                  
                 </Routes>
