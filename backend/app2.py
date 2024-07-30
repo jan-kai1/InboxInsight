@@ -122,52 +122,11 @@ def login():
    
     
     
-    authorization_url, state = flow.authorization_url()
+    authorization_url, state = flow.authorization_url(access_type = "offline")
+    # authorization_url, state = flow.authorization_url()
+
     session["state"] = state
     return redirect(authorization_url)
-
-
-
-#is passed a user ID and returns a list of lists of emails sorted by sender  
-@app.route("/overview", methods = ["GET", "POST"])
-def overview():
-    # gives the top 5 people sending emails within last 14 days
-    # get all emails within last 14 days
-    # sort by unique email senders
-    # create a hashtable 
-    data = request.get_json()
-    app.logger.info(data)
-    if data == None:
-        return jsonify({"error": "invalid data/ no token"}, 401)
-    else:
-        userHash = data['userHash']
-        app.logger.info(userHash)
-        # return jsonify({"status" : userHash})
-        try: 
-            user = UserToken.query.filter_by(hashedEmail = userHash).one()
-            userToken = user.gmail_token
-            #pass into email
-            authToken = json.loads(userToken)
-            senders =  emailsBySender(authToken)
-            data = {"userEmail" : user.user_id, "senders" : senders}
-            return jsonify(data)
-        except NoResultFound as e:
-            return {"error" : e}, 401
-        
-@app.route("/analysis", methods = ["POST", "GET"])
-def analysis():
-    data = request.get_json()
-   
-    if not data['userHash']:
-        return {"error" : "no userHash"},401
-    
-    userHash = data['userHash']
-    try:
-        regUser = UserToken.query.filter_by(hashedEmail = userHash).one()
-        analysis = getSenderAnalysis(data['emails'])
-        return jsonify({"analysis" : analysis})
-    except NoResultFound as e:
-        return {"error" : e}, 401
 
 @app.route("/callback")
 def callback():
@@ -236,6 +195,49 @@ def callback():
   
     
 
+#is passed a user ID and returns a list of lists of emails sorted by sender  
+@app.route("/overview", methods = ["GET", "POST"])
+def overview():
+    # gives the top 5 people sending emails within last 14 days
+    # get all emails within last 14 days
+    # sort by unique email senders
+    # create a hashtable 
+    data = request.get_json()
+    app.logger.info(data)
+    if data == None:
+        return jsonify({"error": "invalid data/ no token"}, 401)
+    else:
+        userHash = data['userHash']
+        app.logger.info(userHash)
+        # return jsonify({"status" : userHash})
+        try: 
+            user = UserToken.query.filter_by(hashedEmail = userHash).one()
+            userToken = user.gmail_token
+            #pass into email
+            authToken = json.loads(userToken)
+            senders =  emailsBySender(authToken)
+            data = {"userEmail" : user.user_id, "senders" : senders}
+            return jsonify(data)
+        except NoResultFound as e:
+            return {"error" : e}, 401
+        
+@app.route("/analysis", methods = ["POST", "GET"])
+def analysis():
+    data = request.get_json()
+   
+    if not data['userHash']:
+        return {"error" : "no userHash"},401
+    
+    userHash = data['userHash']
+    try:
+        regUser = UserToken.query.filter_by(hashedEmail = userHash).one()
+        analysis = getSenderAnalysis(data['emails'])
+        return jsonify({"analysis" : analysis})
+    except NoResultFound as e:
+        return {"error" : e}, 401
+
+
+
 
     
 
@@ -297,4 +299,4 @@ if __name__ == "__main__":
 
 
  
-    app.run(debug = True)
+    app.run(debug = False)
