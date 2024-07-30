@@ -44,9 +44,9 @@ migrate = Migrate(app,db)
 
 DEV_GMAIL_TOKEN_PATH = "creds/gmail_token.json"
 # for deploy
-DEV_CLIENT_SECRET_PATH = "web_google.json"
+# DEV_CLIENT_SECRET_PATH = "web_google.json"
 #  # for on machine
-# DEV_CLIENT_SECRET_PATH = "creds/client_secret.json"
+DEV_CLIENT_SECRET_PATH = "creds/client_secret.json"
 
 GOOGLE_CLIENT_ID = None
 try:
@@ -122,10 +122,9 @@ def login():
    
     
     
-    authorization_url, state = flow.authorization_url(access_type = "offline")
+    authorization_url, state = flow.authorization_url(access_type = "offline", include_granted_scopes ="true")
     # authorization_url, state = flow.authorization_url()
 
-    session["state"] = state
     return redirect(authorization_url)
 
 @app.route("/callback")
@@ -299,4 +298,4 @@ if __name__ == "__main__":
 
 
  
-    app.run(debug = False)
+    app.run(debug = True)
