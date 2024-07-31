@@ -122,8 +122,8 @@ def login():
    
     
     # this wont work on local machine, test outside
-    # authorization_url, state = flow.authorization_url(access_type = "offline", include_granted_scopes = "true")
-    authorization_url, state = flow.authorization_url()
+    authorization_url, state = flow.authorization_url(access_type = "offline", include_granted_scopes = "true")
+    # authorization_url, state = flow.authorization_url()
 
     return redirect(authorization_url)
 
