@@ -260,6 +260,8 @@ def emailSecure():
         #pass into email
         authToken = json.loads(userToken)
         app.logger.info("checking token")
+        if "refresh_token" not in authToken:
+            return {"error" : "no refresh token"} , 503
         app.logger.info(authToken['refresh_token'])
         emails =  getEmails(authToken)
         data = {"userEmail" : user.user_id, "emails" : emails}
