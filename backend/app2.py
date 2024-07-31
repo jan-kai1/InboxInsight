@@ -208,15 +208,13 @@ def overview():
         return jsonify({"error": "invalid data/ no token"}, 401)
     else:
         userHash = data['userHash']
-        app.logger.info(userHash)
-        app.logger.info("sigma")
+       
         # return jsonify({"status" : userHash})
         try: 
             user = UserToken.query.filter_by(hashedEmail = userHash).one()
             userToken = user.gmail_token
             #pass into email
             authToken = json.loads(userToken)
-            app.logger.info(authToken['refresh_token'])
             senders =  emailsBySender(authToken)
             data = {"userEmail" : user.user_id, "senders" : senders}
             return jsonify(data)
@@ -259,10 +257,10 @@ def emailSecure():
 
         #pass into email
         authToken = json.loads(userToken)
-        app.logger.info("checking token")
-        if "refresh_token" not in authToken:
-            return {"error" : "no refresh token"} , 503
-        app.logger.info(authToken['refresh_token'])
+        # app.logger.info("checking token")
+        # if "refresh_token" not in authToken:
+        #     return {"error" : "no refresh token"} , 503
+        # app.logger.info(authToken['refresh_token'])
         emails =  getEmails(authToken)
         data = {"userEmail" : user.user_id, "emails" : emails}
         return jsonify(data)
