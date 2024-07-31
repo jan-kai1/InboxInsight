@@ -135,8 +135,8 @@ def callback():
     except Exception as e:
         return {"error" : e} , 401
 
-    if not session["state"] == request.args["state"]:
-        abort(500)  # State does not match!
+    # if not session["state"] == request.args["state"]:
+    #     abort(500)  # State does not match!
 
     credentials = flow.credentials
     if credentials == None:
