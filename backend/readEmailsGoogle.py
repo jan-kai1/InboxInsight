@@ -308,7 +308,7 @@ def getEmails(authToken): #uses auth token from authorization callback
         #older_than: newer_than: takes in y m or d
         #https://support.google.com/mail/answer/7190
         query = "is:unread newer_than:3d"
-
+        
         service  = build("gmail", "v1", credentials = Credentials.from_authorized_user_info(authToken))
         # returns a list of messages with msg['id']
         #have to query again to get the actual text (processed in processMessage)

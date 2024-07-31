@@ -44,9 +44,9 @@ migrate = Migrate(app,db)
 
 DEV_GMAIL_TOKEN_PATH = "creds/gmail_token.json"
 # for deploy
-# DEV_CLIENT_SECRET_PATH = "web_google.json"
+DEV_CLIENT_SECRET_PATH = "web_google.json"
 #  # for on machine
-DEV_CLIENT_SECRET_PATH = "creds/client_secret.json"
+# DEV_CLIENT_SECRET_PATH = "creds/client_secret.json"
 
 GOOGLE_CLIENT_ID = None
 try:
@@ -121,10 +121,11 @@ def login_is_required(function):
 def login():
    
     
-    
-    authorization_url, state = flow.authorization_url(access_type = "offline", include_granted_scopes ="true")
+    # this wont work on local machine, test outside
+    authorization_url, state = flow.authorization_url(access_type = "offline", include_granted_scopes = "true")
     # authorization_url, state = flow.authorization_url()
 
+    session["state"] = state
     return redirect(authorization_url)
 
 @app.route("/callback")
@@ -168,6 +169,7 @@ def callback():
 
    
     userGmailToken = credentials.to_json()
+    app.logger.info(f"Refresh Token in Credentials? {credentials.refresh_token}")
     userEmail = id_info.get("email")
 
 
@@ -208,12 +210,14 @@ def overview():
     else:
         userHash = data['userHash']
         app.logger.info(userHash)
+        app.logger.info("sigma")
         # return jsonify({"status" : userHash})
         try: 
             user = UserToken.query.filter_by(hashedEmail = userHash).one()
             userToken = user.gmail_token
             #pass into email
             authToken = json.loads(userToken)
+            app.logger.info(authToken['refresh_token'])
             senders =  emailsBySender(authToken)
             data = {"userEmail" : user.user_id, "senders" : senders}
             return jsonify(data)
@@ -245,7 +249,6 @@ def analysis():
 @app.route("/emails/secure", methods = ["POST", "GET"])
 def emailSecure():
     data = request.get_json()
-    app.logger.info(data)
     if data == None:
         return jsonify({"error": "invalid data/ no token"}, 401)
     else:
@@ -254,8 +257,11 @@ def emailSecure():
         # return jsonify({"status" : userHash})
         user = UserToken.query.filter_by(hashedEmail = userHash).one()
         userToken = user.gmail_token
+
         #pass into email
         authToken = json.loads(userToken)
+        app.logger.info("checking token")
+        app.logger.info(authToken['refresh_token'])
         emails =  getEmails(authToken)
         data = {"userEmail" : user.user_id, "emails" : emails}
         return jsonify(data)
@@ -298,4 +304,4 @@ if __name__ == "__main__":
 
 
  
-    app.run(debug = True)
+    app.run(debug = False)
