@@ -39,6 +39,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv("APP_SECRET_KEY")
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=4)   
  
+
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 
@@ -101,7 +102,7 @@ class UserToken(db.Model): #userid uses the gmail
         self.gmail_token = gmail_token
         self.hashedEmail = hashlib.sha256(self.user_id.encode()).hexdigest()
 
-
+#TODO 
 def insert_token(user_id, gmail_token):
     newToken = UserToken(user_id= user_id, gmail_token= gmail_token)
     db.session.add(newToken)
@@ -269,7 +270,7 @@ def emailSecure():
 
 
 
-
+# @app.route("/test/get", methods )
 
 
 
