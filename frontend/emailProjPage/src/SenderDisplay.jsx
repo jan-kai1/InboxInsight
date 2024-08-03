@@ -57,7 +57,8 @@ function SenderDisplay(props) {
             setTimeout(getSenders,5000)
         })
     }
-    useEffect( () => getSenders(), [])
+    // can cause crashes
+    // useEffect( () => getSenders(), [])
     
     //each element of firstFive is a list of email objects
     
@@ -105,40 +106,44 @@ function SenderDisplay(props) {
     }
 
     return (
-        <table className = "table">
-            <Modal show = {showPopup} onHide = {handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Analysis</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div dangerouslySetInnerHTML = {{ __html: senderAnalysis}}></div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant = "primary" onClick = {handleClose}>Do Something</Button>
-                </Modal.Footer>
-            </Modal>
-            <thead>
-                <tr>
-                    <th scope = "col">Rank</th>
-                    <th scope = "col">Sender</th>
-                    <th scope = "col">Count</th>
-                    <th scope = "col">Analysis</th>
-                </tr>
-            </thead>
-            <tbody>
-                {topFive.map((obj, index) => {
-                    return (
-                        <tr key = {obj['sender']}>
-                            <td>{index}</td>
-                            <td>{obj['sender']}</td>
-                            <td>No. of emails {obj['emails'].length}</td>
-                            <td><button onClick={() => requestAnalysis(obj['emails'])}>Get analysis</button></td>
-                        </tr>
-                    )
-                })}
-                
-            </tbody>
-        </table>
+        <>
+            <table className = "table">
+                <Modal show = {showPopup} onHide = {handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Analysis</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div dangerouslySetInnerHTML = {{ __html: senderAnalysis}}></div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant = "primary" onClick = {handleClose}>Do Something</Button>
+                    </Modal.Footer>
+                </Modal>
+                <thead>
+                    <tr>
+                        <th scope = "col">Rank</th>
+                        <th scope = "col">Sender</th>
+                        <th scope = "col">Count</th>
+                        <th scope = "col">Analysis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {topFive.map((obj, index) => {
+                        return (
+                            <tr key = {obj['sender']}>
+                                <td>{index}</td>
+                                <td>{obj['sender']}</td>
+                                <td>No. of emails {obj['emails'].length}</td>
+                                <td><button onClick={() => requestAnalysis(obj['emails'])}>Get analysis</button></td>
+                            </tr>
+                        )
+                    })}
+                    
+                </tbody>
+            </table>
+            <button onClick ={getSenders}>Get Senders</button>
+        </>
+        
     )
     
 
